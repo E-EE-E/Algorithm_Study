@@ -55,7 +55,7 @@ int main(int argc, const char * argv[]) {
     for(size_t i = 0; i < N; ++i) {
         for(size_t j = 0; j < N; ++j) {
             if(j+1 < N) {
-                //if(arr[i][j] != arr[i][j+1]) { //모든 경우의 수를 고려하기 위함
+                //if(arr[i][j] != arr[i][j+1]) { //모든 경우의 수를 고려하기 위해 조건필요없음
                 swap(arr[i][j], arr[i][j+1]);
                 //check
                 ans = check(arr, N, i, i, j, j+1);
