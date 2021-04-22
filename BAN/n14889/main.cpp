@@ -1,4 +1,4 @@
-//풀이 1 - 전역변수로 최솟값 비교하는 코드
+//풀이 2 - 재귀함수에서 최솟값 비교 후 리턴하는 코드
 // 1. N 명 중 N/2(m) 명을 선택
 //   선택한 N/2 명의 check[p] = 1 = 스타트팀
 //   선택하지 않은 나머지 check[p] = -1 = 링크팀
@@ -9,7 +9,7 @@
 #include <iostream>
 #include <cstring>
 using namespace std;
-int ans;
+//int ans;
 int a[20][20];
 int check[20];
 
@@ -31,18 +31,26 @@ int simulation(int n, int m) {
     answer = abs(sum1 - sum2);
     return answer; //두 팀의 능력치 차이
 }
-void go(int index, int p, int n, int m) {
+int go(int index, int p, int n, int m) {
     if(index == m) {
         int ret = simulation(n, m);
-        if(ret < ans) ans = ret;
-        return;
+        //if(ret < ans) ans = ret;
+        return ret;
     }
-    if(check[p] != -1) return;
+    if(check[p] != -1) return -1;
+    int ans = -1;
     check[p] = 1;
-    go(index + 1, p+1, n, m);
-
+    int temp = go(index + 1, p+1, n, m);
+    if(ans == -1 || (temp != -1 && ans > temp)) {
+        ans = temp;
+    }
     check[p] = -1;
-    go(index, p+1, n, m);
+    int temp2 = go(index, p+1, n, m);
+    if(ans == -1 || (temp2 != -1 && ans > temp2)) {
+        ans = temp2;
+    }
+    
+    return ans;
 }
 int main(int argc, const char * argv[]) {
     freopen("input.txt", "r", stdin);
@@ -52,7 +60,7 @@ int main(int argc, const char * argv[]) {
         int n;
         cin>> n;
         memset(a, 0, sizeof(a));
-        ans = 100000;
+        
         for(int i = 0; i < n; ++i) {
             check[i] = -1; //초기화
             for(int j = 0; j < n; ++j) {
@@ -61,8 +69,8 @@ int main(int argc, const char * argv[]) {
         }
         int m = n/2;
         cout<<'#'<<t<<' ';
-        go(0, 0, n, m);
-        cout<< ans;
+        cout<<go(0, 0, n, m);
+        //cout<< ans;
         cout<<'\n';
     }
     return 0;
