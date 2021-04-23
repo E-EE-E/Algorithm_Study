@@ -7,46 +7,42 @@ int n, k;
 vector<int> a;
 int solution() {
     int len = 2*n;
-    vector<pair<int, int> > d(len, make_pair(0, 0));
+    vector<bool> robot(len, false);
+    
     int ans = 0;
-    for(int i = 0; i < len; ++i) {
-        d[i].first = a[i];
-    }
-    int index = 0;
+    int cnt = 0;
     while(true) {
         ans += 1;
-        
-        pair<int, int> temp = d[len-1];
-        for(int i = len-2; i >= 0; --i) {
-            if ((i == n-1) || (i == n-2)){
-                d[i+1].first = d[i].first;
-                if(d[i].second > 0)
-                    d[i].second = 0;
-            } else {
-                d[i+1] = d[i];
-            }
+        //1.벨트 한칸 회전
+        rotate(a.rbegin(), a.rbegin() + 1, a.rend());
+        rotate(robot.rbegin(), robot.rbegin()+1, robot.rend());
+        if(robot[n-1] == true) {
+            robot[n-1] = false;
         }
-        d[0] = temp;
-        for(int i = len-1; i >= 0; --i) {
-            if(d[i].second > 0) { //current robot
-                if(d[(i+1)%len].second == 0) { //next part- no robot
-                    if(d[(i+1)%len].first > 0) {
-                        d[(i+1)%len].second = d[i].second;
-                        d[i].second = 0;
-                        d[(i+1)%len].first -= 1;
+        for(int i = n-2; i >= 0; --i) {//n-1에는 로봇이 오지않기때문에 n-1~2n-1까지는 로봇이 없다!!
+            if(robot[i] == true) { //current robot
+                if(robot[i+1] == false) { //next part- no robot
+                    if(a[i+1] > 0) {
+                        robot[i+1] = true;
+                        robot[i] = false;
+                        a[i+1] -= 1;
+                        if(a[i+1] == 0) {
+                            cnt += 1;
+                        }
                     }
                 }
             }
         }
-        
-        if(d[0].first > 0 && d[0].second == 0) {
-            d[0].first -= 1;
-            index += 1;
-            d[0].second = index;
+        if(robot[n-1] == true) {
+            robot[n-1] = false;
         }
-        int cnt = 0;
-        for(int i = 0; i < len; ++i) {
-            if(d[i].first == 0) cnt += 1;
+        
+        if(a[0] > 0 && robot[0] == false) {
+            a[0] -= 1;
+            robot[0] = true;
+            if(a[0] == 0) {
+                cnt += 1;
+            }
         }
         if(cnt >= k) break;
     }
