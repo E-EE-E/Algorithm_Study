@@ -1,32 +1,30 @@
-//피보나치 풀이 1
-//정수 범위 주의
+//피보나치 풀이 2 - 동적계획법, 메모라이제이션 O(N)
 #include <cstdio>
 #include <iostream>
 #include <vector>
 using namespace std;
 
 vector<long long> a;
-long long ans = 0;
-void go(int index, long long sum, int n) {
-    if(index == n) {
-        ans = sum;
-        return;
-    }
-    if(index < 2) {
-        a.push_back(index);
-        go(index +1, 1, n);
-    } else {
-        a.push_back(sum);
-        go(index + 1, a[index] + a[index-1], n);
-    }
+long long go(int n) {
+    if(n < 2)
+        return n;
+    
+    if(a[n] != -1)
+        return a[n];
+    
+    a[n] = go(n-1) + go(n-2);
+    
+    return a[n];
 }
 
 int main(int argc, const char * argv[]) {
     freopen("input.txt", "r", stdin);
-
+    
     int n;
     cin>>n;
-    go(0, 0, n);
-    cout<< ans <<'\n';
+    for(int i = 0; i <=n; ++i) {
+        a.push_back(-1);
+    }
+    cout<< go(n) <<'\n';
     return 0;
 }
