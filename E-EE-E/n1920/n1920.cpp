@@ -12,29 +12,27 @@ int main(){
     vector<int> arr;
     vector<pair<int, int>> comp;
     int n, m, temp;
-    scanf("%d", &n);
+    cin>>n;
     for(int i=0;i<n;i++){
-        scanf("%d", temp);
+        cin>>temp;
         arr.push_back(temp);
     }
-    scanf("%d", m);
+    cin>>m;
     for(int i=0;i<m;i++){
-        scanf("%d", &temp);
+        cin>>temp;
         comp.push_back(make_pair(temp, i));
     }
 
     sort(arr.begin(), arr.end());
     sort(comp.begin(), comp.end(), compare);
-
     int inda=0, indc=0;
-    vector<int> result(m);
-    while(true){
-        if(indc==m) break;
-        if(comp[indc].first==arr[inda]){ result[comp[indc++].second]=1; continue; }
-        if(comp[indc].first>arr[inda] && inda<n-1){ inda++; continue; }
-        result[comp[indc++].second]=0;
+    vector<int> result(m, 0);
+    while(indc<m && inda<n){
+        if(comp[indc].first==arr[inda]){result[comp[indc++].second]=1;}
+        else if(comp[indc].first>arr[inda]){inda++;}
+        else {result[comp[indc++].second]=0;}
     }
     for(int x : result){
-        cout << x << endl; 
+        cout << x << '\n'; 
     }
 }
