@@ -1,27 +1,45 @@
-// 풀이방법 - 수학적 수식으로 z+1을 만드는 최소횟수 a 찾기
-// y+a 와 동시에 x+a 가 됨 주의
-// a 계산식 중 x*z처리시 int범위 초과 주의
+// 풀이방법 - 이분탐색
+// first <= last 를 만족하기 위해
+// first = mid + 1, last = mid -1 (O)
+// 주의 (first = mid, last = mid (X))
 #include <cstdio>
 #include <iostream>
-#include <cmath>
+#include <vector>
+#include <algorithm>
 using namespace std;
+
 int main(int argc, const char * argv[]) {
     freopen("input.txt", "r", stdin);
     int tc; cin>>tc;
-    for(int t = 1; t <= tc; ++t) {
-        long long x, y;
-        cin>>x>>y;
-        long long ans = 0;
-        int z = (int)(100*y/x);
-        if(z >= 99)
-            ans = -1;
-        else {
-            long long a = (z*x + x -100*y);
-            long long b = (99.0-z);
-            ans = (a%b == 0)? a / b : a/b +1;
+    for(int t = 1; t<= tc; ++t) {
+        int n, m;
+        cin>>n>>m;
+        vector<int> tree(n, 0);
+        for(int i = 0; i < n; ++i) {
+            cin>>tree[i];
+        }
+        long long max = -1;
+        long long first = 0;
+        long long last = *max_element(tree.begin(), tree.end());
+        while(first <= last) {
+            long long sum = 0;
+            long long mid = (last + first)/2;
+            for(int i = 0; i < n; ++i) {
+                if(tree[i] >= mid) {
+                    sum += tree[i] - mid;
+                }
+            }
+            if(sum >= m) {
+                if(max == -1 || max < mid) {
+                    max = mid;
+                }
+                first = mid + 1;
+            } else {
+                last = mid - 1;
+            }
         }
         cout<<'#'<<t<<' ';
-        cout<<ans<<'\n';
+        cout<<max<<'\n';
     }
     return 0;
 }
