@@ -1,184 +1,222 @@
 #pragma once
 #include <iostream>
+#include <set>
+#include <unordered_set>
+#include <unordered_map>
+#include <deque>
 #include <algorithm>
-#include <vector>
-#include <cmath>
 using namespace std;
 
 namespace bj {
-
-	/*이제 형택이는 앞으로의 모든 게임에서 지지 않는다.하지만, 형택이는 게임 기록을 삭제 할 수 없기 때문에,
-	자신의 못하던 예전 기록이 현재 자신의 엄청난 실력을 증명하지 못한다고 생각했다.
-
-	게임 기록은 다음과 같이 생겼다.
-
-	게임 횟수 : X
-	이긴 게임 : Y(Z%)
-	Z는 형택이의 승률이고, 소수점은 버린다.예를 들어, X = 53, Y = 47이라면, Z = 88이다.
-	X와 Y가 주어졌을 때, 형택이가 게임을 최소 몇 번 더 해야 Z가 변하는지 구하는 프로그램을 작성하시오.
-
-	입력
-	각 줄에 정수 X와 Y가 주어진다.
-
-	출력
-	첫째 줄에 형택이가 게임을 최소 몇 판 더 해야하는지 출력한다.만약 Z가 절대 변하지 않는다면 - 1을 출력한다.*/
-	int P1072()
-	{
-		long long X, Y;
-		cin >> X >> Y;
-
-		auto Z_ini = static_cast<const int>(floorl(100.0 * Y / X));
-		if (Z_ini >= 99)
-		{
-			cout << -1;
-			return 0;
-		}
-		else if (X == 0)
-		{
-			cout << 1;
-			return 0;
-		}
-
-		const auto Z_target = static_cast<long double>(Z_ini + 1) / 100.0;
-		cout << static_cast<long long>(ceill((Z_target * X - Y) / (1 - Z_target)));
-		return 0;
-	}
-
-	/*상근이는 절단기에 높이 H를 지정해야 한다.
-	높이를 지정하면 톱날이 땅으로부터 H미터 위로 올라간다.
-	그 다음, 한 줄에 연속해있는 나무를 모두 절단해버린다.
-	따라서, 높이가 H보다 큰 나무는 H 위의 부분이 잘릴 것이고, 낮은 나무는 잘리지 않을 것이다.
-	예를 들어, 한 줄에 연속해있는 나무의 높이가 20, 15, 10, 17이라고 하자.
-	상근이가 높이를 15로 지정했다면, 나무를 자른 뒤의 높이는 15, 15, 10, 15가 될 것이고, 
-	상근이는 길이가 5인 나무와 2인 나무를 들고 집에 갈 것이다. (총 7미터를 집에 들고 간다) 절단기에 설정할 수 있는 높이는 양의 정수 또는 0이다.
-
-	상근이는 환경에 매우 관심이 많기 때문에, 나무를 필요한 만큼만 집으로 가져가려고 한다.
-	이때, 적어도 M미터의 나무를 집에 가져가기 위해서 절단기에 설정할 수 있는 높이의 최댓값을 구하는 프로그램을 작성하시오.
-
-	입력
-	첫째 줄에 나무의 수 N과 상근이가 집으로 가져가려고 하는 나무의 길이 M이 주어진다. (1 ≤ N ≤ 1,000,000, 1 ≤ M ≤ 2,000,000,000)
-
-	둘째 줄에는 나무의 높이가 주어진다.나무의 높이의 합은 항상 M보다 크거나 같기 때문에, 상근이는 집에 필요한 나무를 항상 가져갈 수 있다.
-	높이는 1,000,000,000보다 작거나 같은 양의 정수 또는 0이다.
-
-	출력
-	적어도 M미터의 나무를 집에 가져가기 위해서 절단기에 설정할 수 있는 높이의 최댓값을 출력한다.
-	5 20
-	4 42 40 26 46
-	
-	4 7
-	20 15 10 17
-	*/
-	int P2805()
-	{
-		int N, M;
-		cin >> N >> M;
-		vector<long long> trees(N);
-		for (auto& tree : trees)
-		{
-			cin >> tree;
-		}
-
-		sort(trees.rbegin(), trees.rend());//O(n log n)
-
-		//H_saw == trees[0]일때
-		//sum = 0;
-		//H_saw == trees[1]일때
-		//sum = trees[0] - trees[1]
-		//H_saw == trees[2]일때
-		//sum = trees[0] - trees[2] + trees[1] -trees[2]...
-		//따라서 H_saw == trees[i]일때
-		//sum = trees[0] - trees[i] + ... + trees[i-1] - trees[i]
-		//=> SUM(trees j = 0; j < i) trees[j] - (i-1)trees[i]
-		// 어떤 j에 대해서, sum(j) <= target <= sum(j+1)가 존재하고( trees[j] > trees[j+1])
-		// H_saw -- 마다 sum += (j+1)
-		// 따라서 H_saw = trees[j] - ceil({target - sum(j)} / j+1)
-		//TODO 1 FIND j
-
-		int j = 0;
-		bool flag = true;
-		int sum = 0;
-		for (int i = 1; i < trees.size() && flag; ++i) //O(n^2)
-		{
-			sum = 0;
-			for (j = 0; j < i; ++j)
-			{
-				sum += (trees[j] - trees[i]);
-			}
-			
-			if (sum == M)
-			{
-				//lucky case
-				cout << trees[i];
-				return 0;
-			}
-			else if (sum > M)
-			{
-				flag = false;
-				break;
-			}				
-		}
-
-		cout << ceill(trees[j] + (long double)(sum - M) / j);
-
-		return 0;
-	}
-
 	/*문제
-	10, 000 이하의 자연수로 이루어진 길이 N짜리 수열이 주어진다.
-	이 수열에서 연속된 수들의 부분합 중에 그 합이 S 이상이 되는 것 중,
-	가장 짧은 것의 길이를 구하는 프로그램을 작성하시오.
+	N개의 정수 A[1], A[2], …, A[N]이 주어져 있을 때,
+	이 안에 X라는 정수가 존재하는지 알아내는 프로그램을 작성하시오.
 
 	입력
-	첫째 줄에 N(10 ≤ N < 100, 000)과 S(0 < S ≤ 100, 000, 000)가 주어진다.둘째 줄에는 수열이 주어진다.수열의 각 원소는 공백으로 구분되어져 있으며, 10, 000이하의 자연수이다.
+	첫째 줄에 자연수 N(1 ≤ N ≤ 100, 000)이 주어진다.
+	다음 줄에는 N개의 정수 A[1], A[2], …, A[N]이 주어진다.
+	다음 줄에는 M(1 ≤ M ≤ 100, 000)이 주어진다.
+	다음 줄에는 M개의 수들이 주어지는데,
+	이 수들이 A안에 존재하는지 알아내면 된다.
+	모든 정수의 범위는 - 231 보다 크거나 같고 231보다 작다.
 
 	출력
-	첫째 줄에 구하고자 하는 최소의 길이를 출력한다.만일 그러한 합을 만드는 것이 불가능하다면 0을 출력하면 된다.
+	M개의 줄에 답을 출력한다.존재하면 1을,
+	존재하지 않으면 0을 출력한다.
 
-	10 15
-	5 1 3 5 10 7 4 9 2 8*/
-	int P1806()
+	5
+	4 1 5 2 3
+	5
+	1 3 7 9 5
+
+	*/
+	int P1920()
 	{
-		int N, S;
-		cin >> N >> S;
-		vector<int> inputs(N);
-		int tot = 0;
-		for (auto& element : inputs)
+		ios::sync_with_stdio(false);
+		cin.tie(NULL);
+		cout.tie(NULL);
+
+		int N, M;
+		int n, m;
+		cin >> N;
+		//set<int> A;			search time :	O(log n)		(100ms)
+		//unordered_set<int> A;					O(1) (Average)	(64ms)
+		//unordered_map<int, int> A; //			O(log n)		(74ms)
+
+		unordered_set<int> A;
+		while (N--)
 		{
-			cin >> element;
-			tot += element;
-		}
-		
-		if (tot < S)
-		{
-			cout << 0;
-			return 0;
-		}
-		else if (S == 0)
-		{
-			cout << 1;
-			return 0;
+			cin >> n;
+			A.insert(n);
 		}
 
-		int left = 0, right = 0;
-		int min_len = INT_MAX;
-		int subSum = 0;
-		while (left <= right)
+		cin >> M;
+		const auto end = A.end();
+		while (M--)
 		{
-			if (subSum >= S)
+			cin >> m;
+			cout << static_cast<int>(A.find(m) != end) << "\n";
+		}
+
+		return 0;
+	}
+	/*
+	* 학생들이 추천을 시작하기 전에 모든 사진틀은 비어있다.
+	* 어떤 학생이 특정 학생을 추천하면, 추천받은 학생의 사진이 반드시 사진틀에 게시되어야 한다.
+	* 비어있는 사진틀이 없는 경우에는 현재까지 추천 받은 횟수가 가장 적은 학생의 사진을 삭제하고, 그 자리에 새롭게 추천받은 학생의 사진을 게시한다. 이때, 현재까지 추천 받은 횟수가 가장 적은 학생이 두 명 이상일 경우에는 그러한 학생들 중 게시된 지 가장 오래된 사진을 삭제한다.
+	* 현재 사진이 게시된 학생이 다른 학생의 추천을 받은 경우에는 추천받은 횟수만 증가시킨다.
+	* 사진틀에 게시된 사진이 삭제되는 경우에는 해당 학생이 추천받은 횟수는 0으로 바뀐다.
+	* 입력
+	* 첫째 줄에는 사진틀의 개수 N이 주어진다. (1≤N≤20) 둘째 줄에는 전체 학생의 총 추천 횟수가 주어지고, 셋째 줄에는 추천받은 학생을 나타내는 번호가 빈 칸을 사이에 두고 추천받은 순서대로 주어진다. 총 추천 횟수는 1,000번 이하이며 학생을 나타내는 번호는 1부터 100까지의 자연수이다.
+	*
+	* 출력
+	* 사진틀에 사진이 게재된 최종 후보의 학생 번호를 증가하는 순서대로 출력한다.
+	*
+	* 3
+	* 9
+	* 2 1 4 3 5 6 2 7 2
+	*
+	* 3
+	* 14
+	* 2 1 4 3 5 6 2 7 2 100 100 54 54 50
+	*/
+	int P1713()
+	{
+		int N, CandidateCount;
+		cin >> N >> CandidateCount;
+
+		vector<pair<int, int>> picFrame;
+
+		while (CandidateCount--)
+		{
+			int recommand;
+			cin >> recommand;
+			auto findCandidate = find_if(picFrame.begin(), picFrame.end(), [&recommand](const auto& pic)
+				{
+					return recommand == pic.first;
+				});
+
+			if (findCandidate == picFrame.end())
 			{
-				min_len = min(min_len, right - left);
-				subSum -= inputs[left++];
-			}
-			else if (right == N)
-			{
-				break;
+				if (picFrame.size() == N)
+				{
+					picFrame.erase(min_element(picFrame.begin(), picFrame.end(), [](const auto& one, const auto& theOther)
+						{
+							return one.second < theOther.second;
+						}
+					));
+				}
+				picFrame.emplace_back(recommand, 1);
 			}
 			else
-				subSum += inputs[right++];
+			{
+				(*findCandidate).second++;
+			}
 		}
 
-		cout << min_len;
+		sort(picFrame.begin(), picFrame.end(), [](const auto& one, const auto& theOther)
+			{
+				return one.first < theOther.first;
+			}
+		);
+
+		for (auto& candidate : picFrame)
+			cout << candidate.first << " ";
+
+		return 0;
+	}
+
+	int P15686()
+	{
+		ios::sync_with_stdio(false);
+		cin.tie(NULL);
+		cout.tie(NULL);
+
+		constexpr int HOUSE = 1;
+		constexpr int CHIKIEN = 2;
+
+		int N, M;
+		cin >> N >> M;
+
+		vector<vector<int>> City(N, vector<int>(N));
+		vector<pair<int, int>> chikens;
+		vector<pair<int, int>> houses;
+
+		for (int i = 0; i < N; ++i)
+		{
+			for (int j = 0; j < N; ++j)
+			{
+				int block;
+				cin >> block;
+				City[i][j] = block;
+				if (block == HOUSE)
+					houses.emplace_back(i, j);
+				else if (block == CHIKIEN)
+					chikens.emplace_back(i, j);
+			}
+		}
+
+		vector<bool> visits(chikens.size());
+		for (int i = 0; i < M; ++i)
+			visits[i] = true;
+
+		int answer = INT_MAX;
+
+		auto _chikenLength = [&](pair<int, int> house)
+		{
+			int minDistance = INT_MAX;
+			for (int k = 0; k < chikens.size(); ++k)
+			{
+				if (visits[k])
+					minDistance = min(minDistance, abs(chikens[k].first - house.first) + abs(chikens[k].second - house.second));
+			}
+
+			//3중 for문으로 i, j 주변으로 찾기 => Time Limit Exceeded
+			/*
+			const auto max_distance = 2 * (N - 1);
+			for (int distance = 1; distance <= max_distance; ++distance)
+			{
+				for (int p = -distance; p <= distance; ++p)
+				{
+					if (i + p < 0 || N <= i + p)
+						continue;
+
+					for (int q = -distance; q <= distance; ++q)
+					{
+						if (j + q < 0 || N <= j + q)
+							continue;
+
+						if (abs(p) + abs(q) == distance && City[i + p][j + q] == 2)
+						{
+							return distance;
+						}
+					}
+				}
+			}
+			return -1;
+			*/
+
+			return minDistance;
+		};
+
+		do
+		{
+			for (int i = 0; i < chikens.size(); ++i)
+				City[chikens[i].first][chikens[i].second] = visits[i] ? 2 : 0;
+
+			int cityDistance = 0;
+			for (auto& house : houses)
+			{
+				if (cityDistance > answer)
+					break;
+				cityDistance += _chikenLength(house);
+			}
+
+			answer = min(answer, cityDistance);
+		} while (prev_permutation(visits.begin(), visits.end()));
+
+
+		cout << answer;
 		return 0;
 	}
 }
