@@ -68,6 +68,15 @@ pp do_roll(pp cp, int d)
   }
 }
 
+bool isSame(pp a, pp b)
+{
+  if (a.r == b.r && a.c == b.c)
+  {
+    return true;
+  }
+  return false;
+}
+
 void dfs(int cnt, pp cr, pp cb)
 {
   if (cnt >= result)
@@ -96,6 +105,11 @@ void dfs(int cnt, pp cr, pp cb)
     q.pop();
 
     // printf("%d th: r is on (%d, %d) and b is on (%d, %d)\n", cnt, nr.r, nr.c, nb.r, nb.c);
+
+    if (isSame(nr, cr) && isSame(nb, cb))
+    {
+      continue;
+    }
 
     //빨간 구슬만 구멍에 있다면
     if (isHole(nr.r, nr.c) && !isHole(nb.r, nb.c))
