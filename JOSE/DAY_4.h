@@ -425,8 +425,7 @@ namespace bj {
 		//방문기록하기
 		set<pair<pair<int, int>, pair<int, int>>> seen_;
 
-		function<void(pair<int, int>, pair<int, int>)> _findWayOut;
-		_findWayOut = [&](pair<int, int> initialRedPos, pair<int, int> initialBluePos) -> void
+		auto _findWayOut = [&](pair<int, int> initialRedPos, pair<int, int> initialBluePos) -> void
 		{
 			myQ.push(make_pair(make_pair(initialRedPos, initialBluePos), 1));//1->첫 시도니까.
 			while (!myQ.empty())
