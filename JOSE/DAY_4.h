@@ -65,7 +65,7 @@ namespace bj {
 		vector<long long> A(sizeA);
 		unordered_map<long long, long long> subA;
 		/*
-		* ¡Ú¡Ú¡Ú unodered_set => Time Exceeded ¡Ú¡Ú¡Ú
+		* unodered_set => Time Exceeded!
 		*/
 
 		for (auto& a : A)
@@ -119,22 +119,18 @@ namespace bj {
 	4 5 6
 	4 9 0
 	*/
-	int P2096()//³»·Á°¡±â
+	int P2096()//Â³Â»Â·ÃÂ°Â¡Â±Ã¢
 	{
 		constexpr unsigned int THREE = 3;
 
 		int rowCount;
 		cin >> rowCount;
-		if (rowCount == 0)
-		{
-			cout << 0 << " " << 0;
-			return 0;
-		}
+
 		vector<long long> floor(THREE);
 		vector<pair<long long, long long>> memory(THREE);
 		//first => min, second => max
 
-		for (long long row = 0; row < rowCount; ++row)
+		for (int row = 0; row < rowCount; ++row)
 		{
 			for (auto& val : floor)
 				cin >> val;
@@ -169,7 +165,7 @@ namespace bj {
 
 		return 0;
 	}
-
+  
 	int P1002()
 	{
 		long long T;
