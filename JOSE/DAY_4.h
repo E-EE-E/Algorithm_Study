@@ -2,13 +2,11 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
-//#include <unordered_set>
 #include <iterator>
 #include <climits>
 #include <numeric>//std::accumulate
 #include <unordered_map>
 #include <queue>
-#include <functional>
 using namespace std;
 
 namespace bj {
