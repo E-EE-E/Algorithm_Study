@@ -165,67 +165,6 @@ namespace bj {
 
 		return 0;
 	}
-  
-	int P1002()
-	{
-		long long T;
-		cin >> T;
-		while (T--)
-		{
-			int m, n, r1;
-			cin >> m >> n >> r1;
-
-			int p, q, r2;
-			cin >> p >> q >> r2;
-
-			const int radiSum = r1 + r2;
-			const int radiDif = abs(r1 - r2);
-			const double distance = sqrt((m - p) * (m - p) + (n - q) * (n - q));
-
-			if (radiDif < distance && distance < radiSum)
-				cout << 2;
-			else if (distance < DBL_EPSILON && r1 == r2)
-				cout << -1;
-			else if (radiSum < distance || distance < radiDif)
-				cout << 0;
-			else
-				cout << 1;
-			cout << endl;
-		}
-
-		return 0;
-	}
-
-	int P1929()
-	{
-		auto isPrime = [](const int N)
-		{
-			if (N == 1)
-				return false;
-
-			int div = N - 1;
-			while (div != 1)
-			{
-				if (N % div-- == 0)
-					return false;
-			}
-			return true;
-		};
-
-		int m, n;
-		cin >> m >> n;
-		vector<int> primes;
-		for (int i = m; i <= n; i++)
-		{
-			if (isPrime(i))
-				primes.push_back(i);
-		}
-
-		for (auto prime : primes)
-			cout << prime << endl;
-
-		return 0;
-	}
 
 	/*
 	5 5
@@ -255,8 +194,10 @@ namespace bj {
 		int N, M;
 		cin >> N >> M;
 
+		//초기 red, blue, hole위치 저장을 위함.
 		pair<int, int> red, blue, hole;// (Y, X)
-
+		
+		//map받기
 		vector<vector<char>> map(N, vector<char>(M));
 		for (int i = 0; i < N; ++i)
 		{
@@ -281,7 +222,7 @@ namespace bj {
 		}
 
 
-		auto _isFailCondition = [&](pair<int, int> red, pair<int, int> blue)
+		auto _isFailCondition = [&](pair<int, int> blue)
 		{
 			return blue == hole;
 		};
@@ -291,6 +232,7 @@ namespace bj {
 			return red == hole;
 		};
 
+		//해당 방향으로 이동시키기
 		auto _applyGravity = [&](Gravity_Direction direction, const pair<int, int>& red, const pair<int, int>& blue)
 		{
 			//TODO MOVE BOTH WITH SUITABLE DIRECTION
@@ -460,6 +402,7 @@ namespace bj {
 			return make_pair(make_pair(yRedInitial + yRedSpaceCount, xRedInitial + xRedSpaceCount), make_pair(yBlueInitial + yBlueSpaceCount, xBlueInitial + xBlueSpaceCount));
 		};
 
+		/*
 		auto _findPossibleDirection = [&](pair<int, int> currentRedPos, pair<int, int> currentBluePos)
 		{
 			vector<Gravity_Direction> directions = { Gravity_Direction::DOWN, Gravity_Direction::LEFT, Gravity_Direction::RIGHT, Gravity_Direction::UP };
@@ -474,55 +417,69 @@ namespace bj {
 
 			return directions;
 		};
+		*/
 
+		//탐색을 위한 큐
 		queue<pair<pair<pair<int, int>, pair<int, int>>, int>> myQ;
+
+		//방문기록하기
 		set<pair<pair<int, int>, pair<int, int>>> seen_;
 
 		function<void(pair<int, int>, pair<int, int>)> _findWayOut;
 		_findWayOut = [&](pair<int, int> initialRedPos, pair<int, int> initialBluePos) -> void
 		{
-			myQ.push(make_pair(make_pair(initialRedPos, initialBluePos), 1));
+			myQ.push(make_pair(make_pair(initialRedPos, initialBluePos), 1));//1->첫 시도니까.
 			while (!myQ.empty())
 			{
-				const auto front = myQ.front().first;
-				const auto count = myQ.front().second;
+				const auto currentRedBluePos = myQ.front().first; //현재위치&count pop
+				const auto count = myQ.front().second;			  
 				if (count > MAX_COUNT)
 				{
 					cout << -1;
 					return;
 				}
 
-				seen_.insert(make_pair(front.first, front.second));
+				seen_.insert(make_pair(currentRedBluePos.first, currentRedBluePos.second));//방문 기록하기
 				myQ.pop();
 				auto possibleDirection = vector<Gravity_Direction>{ Gravity_Direction::DOWN,
 																		Gravity_Direction::LEFT,
 																		Gravity_Direction::RIGHT,
-																		Gravity_Direction::UP };
+																		Gravity_Direction::UP };//그냥 다 탐색하기
 
 				//auto possibleDirection = _findPossibleDirection(front.first, front.second);
 
+				//현재 위치들에서 가능한 모든 방향에 대해,
 				for (auto direction : possibleDirection)
 				{
-					auto appliedPosPair = _applyGravity(direction, front.first, front.second);
-					if (_isFailCondition(appliedPosPair.first, appliedPosPair.second))
+					//한번 가보기
+					auto appliedPosPair = _applyGravity(direction, currentRedBluePos.first, currentRedBluePos.second);
+					
+					if (_isFailCondition(appliedPosPair.second))
 					{
+						//파란구슬이 빠지면 continue
 						continue;
 					}
 
 					if (_isEscapeCondition(appliedPosPair.first))
 					{
+						//빨간구슬만 빠지면 escape
 						cout << count;
 						return;
 					}
 
 					if (seen_.find(appliedPosPair) == seen_.end())
 					{
+						//만약 안가본 경우라면, 가보기
 						myQ.push(make_pair(appliedPosPair, count + 1));
 					}
+					
+					//가본경우면 continue;
+
 				}
 			}
 
 			cout << -1;
+			// count <= MAX_COUNT일때 모든 경우를 가봤는데 Loop를 나옴 -> 탈출이 불가능
 		};
 
 		_findWayOut(red, blue);
