@@ -223,16 +223,14 @@ namespace bj {
 			int target;
 			cin >> target;
 
-			vector<int> primes;
 			set<int> primeSet;
 
-			primes.reserve(123456 * 2);
 			int count = 0;
 
 			for (int i = 2; i < target; ++i)
 			{
 				bool isPrime = true;
-				for (auto prime : primes)
+				for (auto prime : primeSet)
 				{
 					if (prime * prime > i)
 						break;
@@ -245,23 +243,20 @@ namespace bj {
 				}
 
 				if (isPrime)
-				{
-					primes.push_back(i);
 					primeSet.insert(i);
-				}
 			}
 
-			vector<int> sub;
-			for (auto prime : primes)
+			vector<int> keys;
+			for (auto prime : primeSet)
 			{
 				if (prime > target - prime)
 					break;
 
 				if (primeSet.find(target - prime) != primeSet.end())
-					sub.push_back(prime);
+					keys.push_back(prime);
 			}
 
-			cout << *sub.rbegin() << " " << target - *sub.rbegin() << endl;
+			cout << *keys.rbegin() << " " << target - *keys.rbegin() << endl;
 		}
 
 		return 0;
