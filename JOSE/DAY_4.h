@@ -194,7 +194,7 @@ namespace bj {
 
 		//초기 red, blue, hole위치 저장을 위함.
 		pair<int, int> red, blue, hole;// (Y, X)
-		
+
 		//map받기
 		vector<vector<char>> map(N, vector<char>(M));
 		for (int i = 0; i < N; ++i)
@@ -220,18 +220,18 @@ namespace bj {
 		}
 
 
-		auto _isFailCondition = [&](pair<int, int> blue)
+		auto _isFailCondition = [&hole](pair<int, int> blue)
 		{
 			return blue == hole;
 		};
 
-		auto _isEscapeCondition = [&](pair<int, int> red)
+		auto _isEscapeCondition = [&hole](pair<int, int> red)
 		{
 			return red == hole;
 		};
 
 		//해당 방향으로 이동시키기
-		auto _applyGravity = [&](Gravity_Direction direction, const pair<int, int>& red, const pair<int, int>& blue)
+		auto _applyGravity = [&map, N, M, SPACE, HOLE, WALL](Gravity_Direction direction, const pair<int, int>& red, const pair<int, int>& blue)
 		{
 			//TODO MOVE BOTH WITH SUITABLE DIRECTION
 			//debug
@@ -423,13 +423,14 @@ namespace bj {
 		//방문기록하기
 		set<pair<pair<int, int>, pair<int, int>>> seen_;
 
-		auto _findWayOut = [&](pair<int, int> initialRedPos, pair<int, int> initialBluePos) -> void
+		//&로하면 이렇게 길어지진 않음 ㅋㅋㅋ
+		auto _findWayOut = [&myQ, &seen_, _applyGravity, _isFailCondition, _isEscapeCondition, MAX_COUNT](pair<int, int> initialRedPos, pair<int, int> initialBluePos) -> void
 		{
 			myQ.push(make_pair(make_pair(initialRedPos, initialBluePos), 1));//1->첫 시도니까.
 			while (!myQ.empty())
 			{
 				const auto currentRedBluePos = myQ.front().first; //현재위치&count pop
-				const auto count = myQ.front().second;			  
+				const auto count = myQ.front().second;
 				if (count > MAX_COUNT)
 				{
 					cout << -1;
@@ -450,7 +451,7 @@ namespace bj {
 				{
 					//한번 가보기
 					auto appliedPosPair = _applyGravity(direction, currentRedBluePos.first, currentRedBluePos.second);
-					
+
 					if (_isFailCondition(appliedPosPair.second))
 					{
 						//파란구슬이 빠지면 continue
@@ -469,7 +470,7 @@ namespace bj {
 						//만약 안가본 경우라면, 가보기
 						myQ.push(make_pair(appliedPosPair, count + 1));
 					}
-					
+
 					//가본경우면 continue;
 
 				}
