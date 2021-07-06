@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <deque>
 #include <algorithm>
+#include <map>
 using namespace std;
 
 namespace bj {
@@ -217,6 +218,60 @@ namespace bj {
 
 
 		cout << answer;
+		return 0;
+	}
+
+	int P1039()
+	{
+		string N;
+		int swapCount;
+
+		cin >> N >> swapCount;
+		string LARGEST(N);
+		sort(LARGEST.rbegin(), LARGEST.rend());
+
+
+		auto _isTheLargest = [&N, &LARGEST]() -> bool
+		{
+			return LARGEST == N;
+		};
+
+		for (int i = 0; i < N.size() && !_isTheLargest() && swapCount--; ++i)
+		{
+			if (N[i] == LARGEST[i])
+				++swapCount;
+
+			auto currentIter = N.begin();
+			advance(currentIter, i);
+
+			auto iter = find(N.rbegin(), make_reverse_iterator(currentIter), LARGEST[i]);
+			swap(*currentIter, *(next(iter).base()));
+
+		}
+
+		unordered_multiset<int> checkDuplicate;
+		for (auto& n : N)
+		{
+			checkDuplicate.emplace(n);
+			if (checkDuplicate.count(n) > 1)
+			{
+				cout << N;
+				return 0;
+			}
+		}
+
+		while (swapCount-- > 0)
+		{
+			swap(*prev(N.end()), *prev(prev(N.end())));
+			if (N[0] == '0')
+			{
+				cout << -1;
+				return 0;
+			}
+		}
+
+
+		cout << N;
 		return 0;
 	}
 }
