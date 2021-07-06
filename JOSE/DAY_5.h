@@ -42,6 +42,49 @@ namespace bj {
 		return 0;
 	}
 
+	int P1655()
+	{
+		ios_base::sync_with_stdio(false);
+		cin.tie(NULL); cout.tie(NULL);
+
+		int N;
+		cin >> N;
+
+		int caseCount = N;
+
+		priority_queue<int> maxHeap;
+		priority_queue<int, vector<int>, greater<int>> minHeap;
+
+		int num;
+		while (caseCount--)
+		{
+			cin >> num;
+
+			// 처음에는 맥스힙에 넣어줌.
+			if (maxHeap.size() > minHeap.size())
+				minHeap.push(num);
+			else
+				maxHeap.push(num);
+
+			if (!minHeap.empty())
+			{
+				auto mtop = maxHeap.top();
+				auto ntop = minHeap.top();
+
+				//넣고나서 maxHeap의 탑이 minHeap의 탑이 더 크다면, 서로 바
+				if (mtop > ntop)
+				{
+					maxHeap.pop(); minHeap.pop();
+					maxHeap.push(ntop); minHeap.push(mtop);
+				}
+			}
+
+			cout << maxHeap.top() << "\n";
+		}
+
+		return 0;
+	}
+
 	int P1927()
 	{
 		unsigned int T;
