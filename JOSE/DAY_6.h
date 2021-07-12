@@ -47,7 +47,7 @@ namespace bj {
 
 			return node;
 		}
-		
+
 		static const TreeNode* findNode(const TreeNode* node, const char target)
 		{
 			if (node)
@@ -73,7 +73,7 @@ namespace bj {
 
 			return nullptr;
 		}
-		
+
 		static void preorderPrint(TreeNode* currentNode)
 		{
 			if (currentNode)
@@ -115,7 +115,7 @@ namespace bj {
 				}
 				else
 				{
-					if(currentNode->rightChild_)
+					if (currentNode->rightChild_)
 						preorderAdd(currentNode->rightChild_, newData);
 					else
 						currentNode->rightChild_ = new TreeNode(newData);
@@ -157,7 +157,7 @@ namespace bj {
 		int data;
 		cin >> data;//<-첫 입력은 ROOT가 됨
 		auto rootNode = new TreeNode(data);
-		
+
 
 		while (cin >> data)
 			TreeNodeHelper::preorderAdd(rootNode, data);
@@ -169,6 +169,8 @@ namespace bj {
 
 	int P6416()
 	{
+		//0ms
+
 		int from, to;
 		unsigned int caseCount = 0;
 
@@ -186,7 +188,6 @@ namespace bj {
 
 				if (from == 0 && to == 0)
 					break;
-
 
 				//끝이 이미 끝 목록에 있는가?(조건 2)
 				auto findMultiEnds = ends.find(to);
@@ -209,12 +210,20 @@ namespace bj {
 			for (auto end : ends)
 			{
 				auto findEndInStart = starts.find(end);
-				if(findEndInStart != starts.end())
+				if (findEndInStart != starts.end())
 					starts.erase(findEndInStart);
 			}
 
 			if (starts.size() != 1)
-				flag = false;
+			{
+				if (!map.empty())
+					flag = false;
+				else//special case
+				{
+					cout << "Case " << caseCount << " is a tree.\n";
+					continue;
+				}
+			}
 
 			if (flag)
 			{
@@ -242,11 +251,11 @@ namespace bj {
 			}
 
 			cout << "Case " << caseCount << " is ";
-			if(!flag)
+			if (!flag)
 				cout << "not ";
 			cout << "a tree.\n";
 		}
-		
+
 		return -1;
 	}
 
@@ -276,6 +285,8 @@ namespace bj {
 
 	int P3425()
 	{
+		//8ms
+
 		class GoStack
 		{
 		public:
@@ -342,7 +353,7 @@ namespace bj {
 					stack_.push(underTop + top);
 					return true;
 				}
-				
+
 				printError();
 				return false;
 			}
@@ -481,7 +492,7 @@ namespace bj {
 		{
 			string COMMAND;
 			vector<string> commandList;
-			while (COMMAND!= END)
+			while (COMMAND != END)
 			{
 				cin >> COMMAND;
 
@@ -496,13 +507,13 @@ namespace bj {
 			while (caseCount--)
 			{
 				GoStack goStack;
-				
+
 				long long initialValue;
 				cin >> initialValue;
 
 				goStack.push(initialValue);
 
- 				for (const auto& command : commandList)
+				for (const auto& command : commandList)
 				{
 					if (command == NUM) {}
 					else if (command == POP)
@@ -579,7 +590,7 @@ namespace bj {
 
 			cout << "\n";
 
-		}				  
+		}
 
 		return -1;
 	}
