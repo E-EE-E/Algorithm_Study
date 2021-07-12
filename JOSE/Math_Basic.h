@@ -55,9 +55,6 @@ namespace bj {
 		long double radius;
 		cin >> radius;
 
-		long double taxiS;
-		long double ClassicS;
-
 		const auto pi = 2 * acosl(0.0L); //cos(0) == pi/2
 
 		cout.precision(17);

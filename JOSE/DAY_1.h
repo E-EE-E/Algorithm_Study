@@ -166,7 +166,7 @@ namespace bj {
 		auto _chikenLength = [&](pair<int, int> house)
 		{
 			int minDistance = INT_MAX;
-			for (int k = 0; k < chikens.size(); ++k)
+			for (size_t k = 0; k < chikens.size(); ++k)
 			{
 				if (visits[k])
 					minDistance = min(minDistance, abs(chikens[k].first - house.first) + abs(chikens[k].second - house.second));
@@ -202,7 +202,7 @@ namespace bj {
 
 		do
 		{
-			for (int i = 0; i < chikens.size(); ++i)
+			for (size_t i = 0; i < chikens.size(); ++i)
 				City[chikens[i].first][chikens[i].second] = visits[i] ? 2 : 0;
 
 			int cityDistance = 0;
@@ -236,7 +236,7 @@ namespace bj {
 			return LARGEST == N;
 		};
 
-		for (int i = 0; i < N.size() && !_isTheLargest() && swapCount--; ++i)
+		for (size_t i = 0; i < N.size() && !_isTheLargest() && swapCount--; ++i)
 		{
 			if (N[i] == LARGEST[i])
 				++swapCount;

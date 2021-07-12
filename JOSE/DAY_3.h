@@ -27,7 +27,7 @@ namespace bj {
 		long long X, Y;
 		cin >> X >> Y;
 
-		auto Z_ini = static_cast<const int>(floorl(100.0 * Y / X));
+		const auto Z_ini = static_cast<long long>(floorl(100.0 * Y / X));
 		if (Z_ini >= 99)
 		{
 			cout << -1;
@@ -95,10 +95,10 @@ namespace bj {
 		// µû¶ó¼­ H_saw = trees[j] - ceil({target - sum(j)} / j+1)
 		//TODO 1 FIND j
 
-		int j = 0;
+		size_t j = 0;
 		bool flag = true;
-		int sum = 0;
-		for (int i = 1; i < trees.size() && flag; ++i) //O(n^2)
+		long long sum = 0;
+		for (size_t i = 1; i < trees.size() && flag; ++i) //O(n^2)
 		{
 			sum = 0;
 			for (j = 0; j < i; ++j)
