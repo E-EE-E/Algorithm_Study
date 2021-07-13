@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -69,7 +69,7 @@ namespace bj {
 		for (auto& a : A)
 			cin >> a;
 
-		auto subArrLen = sizeA;
+		size_t subArrLen = sizeA;
 		auto begin = A.begin();
 		do
 		{
@@ -103,7 +103,7 @@ namespace bj {
 				//auto debug = accumulate(start, end, 0);
 
 				//FIND PAIR
-				answer += subA[T - accumulate(start, end, 0)];
+				answer += subA[T - accumulate(start, end, 0LL)];
 			}
 		} while (subArrLen-- != 1);
 
