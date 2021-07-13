@@ -3,9 +3,12 @@
 #include <iostream>
 #include <functional>
 #include <unordered_set>
+#include <map>
+#include <unordered_map>
 #include <string>
 #include <iomanip>
 #include <stack>
+#include <bitset>
 
 using namespace std;
 
@@ -594,4 +597,76 @@ namespace bj {
 
 		return -1;
 	}
+
+	/*교환*/
+	int P1039()
+	{
+		//4ms
+
+		string N;
+		int swapCount;
+
+		cin >> N >> swapCount;
+
+		if (N.length() < 2)
+		{
+			//교환불가
+			cout << -1;
+			return 0;
+		}
+
+		set<string> candiates;
+		candiates.emplace(N);
+
+		while (swapCount--)
+		{
+			//string candidate(N);
+			string visits(N.length(), '0');
+			visits[0] = '1';
+			visits[1] = '1';
+
+			set<string> nextGeneration;
+
+			do
+			{
+				bool flag = true;
+
+				for (size_t i = 0; i < visits.size() && flag; ++i)
+				{
+					if (visits[i] != '1')
+						continue;
+
+					for (size_t j = i + 1; i < visits.size(); ++j)
+					{
+						if (visits[i] == '1' && visits[j] == '1')
+						{
+
+							for (auto& candidate : candiates)
+							{
+								string toBeSwaped(candidate);
+								swap(toBeSwaped[i], toBeSwaped[j]);
+
+								if (toBeSwaped[0] != '0')
+									nextGeneration.emplace(toBeSwaped);
+							}
+
+							flag = false;
+							break;
+						}
+					}
+				}
+
+			} while (prev_permutation(visits.begin(), visits.end()));
+
+			candiates = nextGeneration;
+		}
+
+		if (candiates.empty())
+			cout << -1;
+		else
+			cout << *prev(candiates.cend());
+
+		return 0;
+	}
+
 }
