@@ -268,7 +268,7 @@ namespace bj {
 		class GoStack
 		{
 		public:
-			void push(const int x)
+			void push(const long long x)
 			{
 				stack_.push(x);
 			};
