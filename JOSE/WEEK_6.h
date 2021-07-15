@@ -228,31 +228,6 @@ namespace bj {
 				}
 			}
 
-			if (flag)
-			{
-				unordered_set<int> visits;
-				queue<int> que;
-
-				que.emplace(*starts.begin());
-
-				while (!que.empty())
-				{
-					auto currentNode = que.front();
-					visits.emplace(currentNode);
-					que.pop();
-
-					for (auto& next : map[currentNode])
-					{
-						auto findNext = visits.find(next);
-						if (findNext == visits.end())
-							que.push(next);
-					}
-				}
-
-				if (visits.size() != ends.size() + 1)
-					flag = false;
-			}
-
 			cout << "Case " << caseCount << " is ";
 			if (!flag)
 				cout << "not ";
@@ -266,7 +241,7 @@ namespace bj {
 	{
 		//168ms
 
-		map<string, unsigned int> map;
+		map<string, int> map;//정렬을 요함.
 		string species;
 		int tot = 0;
 		while (getline(cin, species))
@@ -586,7 +561,7 @@ namespace bj {
 					}
 					else//NUM X의 X
 					{
-						goStack.push(atoi(command.c_str()));
+						goStack.push(stoi(command));
 					}
 				}
 			}
