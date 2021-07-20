@@ -38,7 +38,7 @@ int main(){
         return 0;
     }
     else if(k==26){
-        printf("%d\n", k);
+        printf("%d\n", n);
         return 0;
     }
     check['a'-'a']=check['c'-'a']=check['i'-'a']=check['n'-'a']=check['t'-'a']=1;
