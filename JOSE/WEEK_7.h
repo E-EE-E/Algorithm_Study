@@ -32,10 +32,8 @@ namespace bj {
 
 			for (size_t i = 0; i < r; i++)
 			{
-				{
-					comb.append(to_string(nums[i]));
-					comb.append(" ");
-				}
+				comb.append(to_string(nums[i]));
+				comb.append(" ");
 			}
 
 			if (memory[comb]++ != 0)
@@ -129,7 +127,7 @@ namespace bj {
 
 		auto _cleanRule = [&]() -> bool
 		{
-			//ÇöÀç À§Ä¡¸¦ Ã»¼ÒÇÑ´Ù.
+			//í˜„ì¬ ìœ„ì¹˜ë¥¼ ì²­ì†Œí•œë‹¤.
 			if (room[currentPos.first][currentPos.second] == SPACE)
 			{
 				room[currentPos.first][currentPos.second] = CLEANED;
@@ -187,7 +185,7 @@ namespace bj {
 
 				if (currentDirection == faceDirection)
 				{
-					//ÈÄÁøÇÒ°÷
+					//í›„ì§„í• ê³³
 					roi = currentPos;
 
 					switch (currentDirection)
@@ -238,8 +236,8 @@ namespace bj {
 		int height, width;
 		cin >> width >> height;
 
-		vector<int> stalagmite(width / 2); //¼®¼ø
-		vector<int> stalactite(width / 2); //Á¾À¯¼®
+		vector<int> stalagmite(width / 2); //ì„ìˆœ
+		vector<int> stalactite(width / 2); //ì¢…ìœ ì„
 
 		for (size_t i = 0; i < width / 2; i++)
 			cin >> stalagmite[i] >> stalactite[i];
