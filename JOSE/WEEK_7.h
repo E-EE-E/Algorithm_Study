@@ -13,8 +13,7 @@ namespace bj {
 
 	int P15663()
 	{
-
-		//nPr
+		//nPr?
 		int n, r;
 		cin >> n >> r;
 		vector<int> nums;
@@ -28,18 +27,18 @@ namespace bj {
 		unordered_map<string, int> memory;
 		do
 		{
-			string comb;
+			string result;
 
 			for (size_t i = 0; i < r; i++)
 			{
-				comb.append(to_string(nums[i]));
-				comb.append(" ");
+				result.append(to_string(nums[i]));
+				result.append(" ");
 			}
 
-			if (memory[comb]++ != 0)
+			if (memory[result]++ != 0)
 				continue;
 
-			cout << comb << "\n";
+			cout << result << "\n";
 
 		} while (next_permutation(nums.begin(), nums.end()));
 
@@ -48,8 +47,10 @@ namespace bj {
 
 	int P15664()
 	{
+		constexpr char yet = '0';
+		constexpr char visited = '1';
 
-		//nCr
+		//nCr?
 		int n, r;
 		cin >> n >> r;
 		vector<int> nums;
@@ -60,11 +61,10 @@ namespace bj {
 
 		sort(nums.begin(), nums.end());
 
-		string visits(n, '0');
+		string visits(n, yet);//000....00
+		
 		for (size_t i = 0; i < r; i++)
-		{
-			visits[i] = '1';
-		}
+			visits[i] = visited;
 
 		unordered_map<string, int> memory;
 		do
@@ -73,7 +73,7 @@ namespace bj {
 
 			for (size_t i = 0; i < visits.length(); i++)
 			{
-				if (visits[i] == '1')
+				if (visits[i] == visited)
 				{
 					comb.append(to_string(nums[i]));
 					comb.append(" ");
@@ -106,9 +106,7 @@ namespace bj {
 		for (auto& rows : room)
 		{
 			for (auto& space : rows)
-			{
 				cin >> space;
-			}
 		}
 
 		enum class Direction
@@ -133,7 +131,9 @@ namespace bj {
 				room[currentPos.first][currentPos.second] = CLEANED;
 				++answer;
 			}
-			cout << "DIR : " << (int)currentDirection << "\n";
+
+			//DEBUG
+			/*cout << "DIR : " << (int)currentDirection << "\n";
 
 			for (size_t i = 0; i < room.size(); i++)
 			{
@@ -147,7 +147,7 @@ namespace bj {
 				cout << "\n";
 			}
 
-			cout << "\n" << "\n";
+			cout << "\n" << "\n";*/
 
 			Direction faceDirection = currentDirection;
 			while (true)
@@ -185,7 +185,7 @@ namespace bj {
 
 				if (currentDirection == faceDirection)
 				{
-					//후진할곳
+					//후진할 곳
 					roi = currentPos;
 
 					switch (currentDirection)
@@ -207,21 +207,19 @@ namespace bj {
 					}
 
 					if (room[roi.first][roi.second] == WALL)
-					{
-						return true;
-					}
+						return false;
 
 					currentPos = roi;
 					break;
 				}
-				//currentDirection = faceDirection;
 			}
-			return false;
+
+			return true;
 		};
 
 		while (true)
 		{
-			if (_cleanRule())
+			if (!_cleanRule())
 			{
 				cout << answer;
 				break;
@@ -254,7 +252,7 @@ namespace bj {
 
 			if (answer == toBeDestroyed)
 				count++;
-			else if (answer > toBeDestroyed) 
+			else if (answer > toBeDestroyed)
 			{
 				answer = toBeDestroyed;
 				count = 1;
