@@ -71,55 +71,35 @@ namespace bj {
 	*/
 	int P2805()
 	{
-		int N, M;
+		int N, M;//treeCount, targetLength
 		cin >> N >> M;
 		vector<long long> trees(N);
 		for (auto& tree : trees)
-		{
 			cin >> tree;
-		}
 
-		sort(trees.rbegin(), trees.rend());//O(n log n)
+		sort(trees.rbegin(), trees.rend());
+		
+		auto right = trees[0];
+		long long left = 0;
 
-		//H_saw == trees[0]일때
-		//sum = 0;
-		//H_saw == trees[1]일때
-		//sum = trees[0] - trees[1]
-		//H_saw == trees[2]일때
-		//sum = trees[0] - trees[2] + trees[1] -trees[2]...
-		//따라서 H_saw == trees[i]일때
-		//sum = trees[0] - trees[i] + ... + trees[i-1] - trees[i]
-		//=> SUM(trees j = 0; j < i) trees[j] - (i-1)trees[i]
-		// 어떤 j에 대해서, sum(j) <= target <= sum(j+1)가 존재하고( trees[j] > trees[j+1])
-		// H_saw -- 마다 sum += (j+1)
-		// 따라서 H_saw = trees[j] - ceil({target - sum(j)} / j+1)
-		//TODO 1 FIND j
-
-		size_t j = 0;
-		bool flag = true;
-		long long sum = 0;
-		for (size_t i = 1; i < trees.size() && flag; ++i) //O(n^2)
+		while (left + 1 < right)
 		{
-			sum = 0;
-			for (j = 0; j < i; ++j)
+			auto mid = (left + right) / 2;//height
+
+			long long lengthSum = 0;
+
+			for (auto& tree : trees)
 			{
-				sum += (trees[j] - trees[i]);
+				if (tree > mid)
+					lengthSum += tree - mid;
+				else
+					break;
 			}
 
-			if (sum == M)
-			{
-				//lucky case
-				cout << trees[i];
-				return 0;
-			}
-			else if (sum > M)
-			{
-				flag = false;
-				break;
-			}
+			lengthSum >= M ? left = mid : right = mid;
 		}
 
-		cout << ceill(trees[j] + (long double)(sum - M) / j);
+		cout << left;
 
 		return 0;
 	}
