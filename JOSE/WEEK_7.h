@@ -113,9 +113,9 @@ namespace bj {
 		{
 			UNDEFINED = -1,
 			NORTH = 0,
-			EAST,
-			SOUTH,
-			WEST
+			EAST,//1
+			SOUTH,//2
+			WEST//3
 		};
 
 
@@ -123,7 +123,7 @@ namespace bj {
 		Direction currentDirection = static_cast<Direction>(initialDirection);
 		int answer = 0;
 
-		auto _cleanRule = [&]() -> bool
+		auto _applyCleanRule = [&]() -> bool
 		{
 			//현재 위치를 청소한다.
 			if (room[currentPos.first][currentPos.second] == SPACE)
@@ -219,7 +219,7 @@ namespace bj {
 
 		while (true)
 		{
-			if (!_cleanRule())
+			if (!_applyCleanRule())
 			{
 				cout << answer;
 				break;
@@ -234,21 +234,23 @@ namespace bj {
 		int height, width;
 		cin >> width >> height;
 
-		vector<int> stalagmite(width / 2); //석순
-		vector<int> stalactite(width / 2); //종유석
+		vector<int> suksoon(width / 2); //석순
+		vector<int> jong(width / 2); //종유석
 
 		for (size_t i = 0; i < width / 2; i++)
-			cin >> stalagmite[i] >> stalactite[i];
+			cin >> suksoon[i] >> jong[i];
 
-		sort(stalactite.begin(), stalactite.end());
-		sort(stalagmite.begin(), stalagmite.end());
+		sort(jong.begin(), jong.end());
+		sort(suksoon.begin(), suksoon.end());
 
 		int answer = INT_MAX;
 		int count = 1;
+
 		for (int i = 0; i < height; i++) {
 
-			auto toBeDestroyed = -distance(stalagmite.end(), lower_bound(stalagmite.begin(), stalagmite.end(), stalagmite[i])) - 1;
-			toBeDestroyed -= distance(stalactite.end(), upper_bound(stalactite.begin(), stalactite.end(), height - stalactite[i])) - 1;
+
+			auto toBeDestroyed = distance(lower_bound(suksoon.begin(), suksoon.end(), suksoon[i]), suksoon.begin());
+			toBeDestroyed -= distance(jong.end(), upper_bound(jong.begin(), jong.end(), height - jong[i]));
 
 			if (answer == toBeDestroyed)
 				count++;
@@ -263,4 +265,31 @@ namespace bj {
 
 		return 0;
 	}
+
+	//int akakopay()
+	//{
+	//	string line1("abbbcbbb");
+	//	string lint2("bbb");
+
+	//	//contain..
+	//	//for (size_t i = 0; i < length; i++)
+	//	{
+	//		//lint2의 변형
+
+
+
+	//		for (auto iter = line1.begin(); iter !=line1.end(); iter++)
+	//		{
+	//			//
+	//			auto size = line1.find(lint2, distance(line1.begin(), line1.begin()));
+	//			if (size != std::string::npos)
+	//			{
+	//				iter += size;
+	//				advance(iter, size);
+	//				count++;
+	//			}
+	//		}
+	//	}
+
+	//}
 }
