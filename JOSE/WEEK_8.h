@@ -45,7 +45,7 @@ namespace bj {
 				continue;
 
 			long double eachColorChance = 1.0L;
-			for (size_t i = 0; i < K; i++)
+			for (size_t i = 0; i < K; i++) //200 100 100  = 100 * 99 ... / 200 * 199 ...
 				eachColorChance *= static_cast<long double>(color.second - i) / (totStoneCount - i);
 			chance += eachColorChance;
 		}
@@ -121,6 +121,12 @@ namespace bj {
 		long long subProblem;
 		cin >> subProblem;
 
+		// 1 2 3 4 5 6
+		// 1~5 x x x x를 재낌!
+		// 6 x x x x x (5 * 5!)
+		// 6 2 ...를 재낌!
+		// 6 3 (1 * 4!)
+
 		//1인 경우 k(1≤k≤N!)를 입력받고,
 		if (subProblem == 1)
 		{
@@ -133,9 +139,10 @@ namespace bj {
 			{
 				auto factorial = factorialMemory[set.size() - 1];// (set.size() - 1)!
 
+				//set : 1 2 3 4 ... N
 				auto iter = set.begin();
-				advance(iter, Kth / factorial);
-				Kth %= factorial;
+				advance(iter, Kth / factorial);//Q
+				Kth %= factorial;//mod
 
 				cout << *iter << " ";
 
@@ -150,6 +157,8 @@ namespace bj {
 				long long elem;
 				cin >> elem;
 
+				//set : 1 2 3 4 ... N
+				// elem = 1
 				auto dist = distance(set.begin(), set.find(elem));
 
 				answer += dist * factorialMemory[set.size() - 1];
@@ -172,31 +181,32 @@ namespace bj {
 		//현재 교차로에서 '들어오는' 경로에 대한 정보
 		struct Intersection
 		{
-			int northNonFixedCount = 0; //북쪽에서 왔고, 방향을 바꿀 수 있는 경우
-			int westNonFixedCount = 0; //서쪽에서 왔고, 방향을 바꿀 수 있는 경우
-			int northFixedCount = 0;//북쪽에서 왔고, 방향을 바꿀 수 없는 경우
-			int westFixedCount = 0;//서쪽에서 왔고, 방향을 바꿀 수 없는 경우
+			int northNonFixedCount_ = 0; //북쪽에서 왔고, 방향을 바꿀 수 있는 경우
+			int westNonFixedCount_ = 0; //서쪽에서 왔고, 방향을 바꿀 수 있는 경우
+			int northFixedCount_ = 0;//북쪽에서 왔고, 방향을 바꿀 수 없는 경우
+			int westFixedCount_ = 0;//서쪽에서 왔고, 방향을 바꿀 수 없는 경우
 		};
 
 		vector<vector<Intersection>> city(height, vector<Intersection>(width));
 
 		for (size_t i = 1; i < height; ++i)
-			city[i][0].northNonFixedCount = 1;
+			city[i][0].northNonFixedCount_ = 1;
 
 		for (size_t i = 1; i < width; ++i)
-			city[0][i].westNonFixedCount = 1;
+			city[0][i].westNonFixedCount_ = 1;
 
 		for (size_t i = 1; i < height; ++i)
 		{
 			for (size_t j = 1; j < width; ++j)
 			{
-				city[i][j].northNonFixedCount = (city[i - 1][j].northFixedCount + city[i - 1][j].northNonFixedCount) % 100000;
-				city[i][j].westNonFixedCount = (city[i][j - 1].westFixedCount + city[i][j - 1].westNonFixedCount) % 100000;
-				city[i][j].northFixedCount = city[i - 1][j].westNonFixedCount;
-				city[i][j].westFixedCount = city[i][j - 1].northNonFixedCount;
+				city[i][j].northNonFixedCount_ = (city[i - 1][j].northFixedCount_ + city[i - 1][j].northNonFixedCount_) % 100000;
+				city[i][j].westNonFixedCount_ = (city[i][j - 1].westFixedCount_ + city[i][j - 1].westNonFixedCount_) % 100000;
+				city[i][j].northFixedCount_ = city[i - 1][j].westNonFixedCount_;
+				city[i][j].westFixedCount_ = city[i][j - 1].northNonFixedCount_;
 			}
 		}
 
+		//DEBUG
 		/*for (auto& row : city)
 		{
 			for (auto& elem : row)
@@ -213,10 +223,10 @@ namespace bj {
 		}*/
 
 		cout <<
-			(city[height - 1][width - 1].northNonFixedCount +
-				city[height - 1][width - 1].westNonFixedCount +
-				city[height - 1][width - 1].northFixedCount +
-				city[height - 1][width - 1].westFixedCount) % 100000;
+			(city[height - 1][width - 1].northNonFixedCount_ +
+				city[height - 1][width - 1].westNonFixedCount_ +
+				city[height - 1][width - 1].northFixedCount_ +
+				city[height - 1][width - 1].westFixedCount_) % 100000;
 
 		return 0;
 	}
@@ -288,6 +298,7 @@ namespace bj {
 
 		//다익스트라
 		//나무위키 보고만듦
+		//https://namu.wiki/w/%EB%8B%A4%EC%9D%B5%EC%8A%A4%ED%8A%B8%EB%9D%BC%20%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98
 		while (M--)
 		{
 			int from, to;
@@ -299,12 +310,12 @@ namespace bj {
 			vector<int> distance = vector<int>(graph.size(), numeric_limits<int>::max());
 			distance[from] = 0;
 
-			array<bool, 1000> visits = { false, };
+			array<bool, 1000/*문제에서 제한*/> visits = { false, };
 			using pii = pair<int, int>;//Cost, Node
 			priority_queue<pii, vector<pii>, greater<pii>> minHeap;
 
 			//2.현재 노드를 나타내는 변수 A에 출발 노드의 번호를 저장한다.
-			minHeap.emplace(0, from);
+			minHeap.emplace(distance[from], from);
 
 			while (!minHeap.empty())
 			{
@@ -317,7 +328,7 @@ namespace bj {
 				{
 					auto costCurrentToNext = graph[currentNode][i];
 
-					if (costCurrentToNext == INT_MAX)
+					if (costCurrentToNext == numeric_limits<int>::max())
 						continue;
 					
 					//4.만약 d[A] + P[A][B]의 값이 더 작다면, 즉 더 짧은 경로라면,
@@ -334,6 +345,7 @@ namespace bj {
 				visits[currentNode] = true;
 			}
 
+			//from => i번째 까지의 최단 경로의 비용을 다 저장
 			cout << distance[to] << "\n";
 		}
 
