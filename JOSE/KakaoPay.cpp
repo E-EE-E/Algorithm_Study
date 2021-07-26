@@ -103,12 +103,12 @@ namespace kakao {
 		return id_;
 	}
 
-	void Generator::addIncomingWire(const shared_ptr<Wire> wire)
+	void Generator::addIncomingWire(const shared_ptr<Wire>& wire)
 	{
 		incoming_.emplace_back(wire);
 	}
 
-	void Generator::addOutgoingWire(const shared_ptr<Wire> wire)
+	void Generator::addOutgoingWire(shared_ptr<Wire> wire)
 	{
 		outgoing_.emplace_back(wire);
 	}
