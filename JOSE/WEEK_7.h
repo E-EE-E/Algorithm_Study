@@ -11,6 +11,7 @@ using namespace std;
 
 namespace bj {
 
+	//N과 M (9)
 	int P15663()
 	{
 		//nPr?
@@ -45,6 +46,7 @@ namespace bj {
 		return 0;
 	}
 
+	//N과 M (10)
 	int P15664()
 	{
 		constexpr char yet = '0';
@@ -62,7 +64,7 @@ namespace bj {
 		sort(nums.begin(), nums.end());
 
 		string visits(n, yet);//000....00
-		
+
 		for (size_t i = 0; i < r; i++)
 			visits[i] = visited;
 
@@ -90,6 +92,7 @@ namespace bj {
 		return 0;
 	}
 
+	//로봇 청소기
 	int P14503()
 	{
 		constexpr int SPACE = 0;
@@ -229,28 +232,31 @@ namespace bj {
 		return 0;
 	}
 
+	//개똥벌레
 	int P3020()
 	{
 		int height, width;
 		cin >> width >> height;
 
-		vector<int> suksoon(width / 2); //석순
-		vector<int> jong(width / 2); //종유석
+		vector<int> suksoon(width / 2);
+		vector<int> jongyou(width / 2);
 
 		for (size_t i = 0; i < width / 2; i++)
-			cin >> suksoon[i] >> jong[i];
+		{
+			cin >> suksoon[i] >> jongyou[i];
+		}
 
-		sort(jong.begin(), jong.end());
+		sort(jongyou.begin(), jongyou.end());
 		sort(suksoon.begin(), suksoon.end());
 
 		int answer = INT_MAX;
 		int count = 1;
 
-		for (int i = 0; i < height; i++) {
+		for (int i = 0; i < height; i++)
+		{
+			auto toBeDestroyed = suksoon.size() - distance(suksoon.begin(), upper_bound(suksoon.begin(), suksoon.end(), i));
+			toBeDestroyed += jongyou.size() - distance(jongyou.begin(), lower_bound(jongyou.begin(), jongyou.end(), height - i));
 
-
-			auto toBeDestroyed = distance(lower_bound(suksoon.begin(), suksoon.end(), suksoon[i]), suksoon.begin());
-			toBeDestroyed -= distance(jong.end(), upper_bound(jong.begin(), jong.end(), height - jong[i]));
 
 			if (answer == toBeDestroyed)
 				count++;
@@ -266,30 +272,121 @@ namespace bj {
 		return 0;
 	}
 
-	//int akakopay()
-	//{
-	//	string line1("abbbcbbb");
-	//	string lint2("bbb");
+	//1학년
+	int P5557()
+	{
+		int numCount;
+		cin >> numCount;
 
-	//	//contain..
-	//	//for (size_t i = 0; i < length; i++)
-	//	{
-	//		//lint2의 변형
+		vector<int> nums(numCount);
+		for (auto& num : nums)
+			cin >> num;
 
+		vector<unordered_map<int, unsigned long long>> branches(numCount - 1);
+		branches[0][nums[0]]++;
 
+		for (size_t i = 1; i < nums.size() - 1; ++i)
+		{
+			for (auto& branch : branches[i - 1])
+			{
+				auto plus = branch.first + nums[i];
+				auto minus = branch.first - nums[i];
 
-	//		for (auto iter = line1.begin(); iter !=line1.end(); iter++)
-	//		{
-	//			//
-	//			auto size = line1.find(lint2, distance(line1.begin(), line1.begin()));
-	//			if (size != std::string::npos)
-	//			{
-	//				iter += size;
-	//				advance(iter, size);
-	//				count++;
-	//			}
-	//		}
-	//	}
+				if (-1 < plus && plus < 21)
+					branches[i][plus] += branch.second;
 
-	//}
+				if (-1 < minus && minus < 21)
+					branches[i][minus] += branch.second;
+			}
+		}
+
+		cout << branches.back()[nums.back()];
+
+		return 0;
+	}
+
+	//	사전
+	int P1256()
+	{
+		struct pair_hash {
+			size_t operator () (const pair<int, int>& p) const
+			{
+				auto h1 = hash<int>{}(p.first);
+				auto h2 = hash<int>{}(p.second);
+
+				return h1 ^ h2;
+			}
+		};
+		constexpr int MAX_ORDER = 1000000000;
+
+		unordered_map<pair<int, int>, int, pair_hash> memory;
+
+		function<int(int, int)> combination;
+		combination = [&](int n, int r) -> int
+		{
+			r = r < (n - r) ? r : (n - r);
+			auto pair = make_pair(n, r);
+
+			if (memory[pair] != 0)
+				return memory[pair];
+
+			if (r == 0 || r == n)
+			{
+				memory[pair] = 1;
+				return memory[pair];
+			}
+			memory[pair] = combination(n - 1, r - 1) + combination(n - 1, r);
+			if (memory[pair] > MAX_ORDER)
+				memory[pair] = MAX_ORDER + 1;//아무튼 MAX_ORDER보다 큼ㅋ
+
+			return memory[pair];
+		};
+
+		int aCount, zCount, order;
+		cin >> aCount >> zCount >> order;
+		
+		//"zzz ... aaa"의 order가 order에 못미침
+		if (combination(aCount + zCount, zCount) < order)
+		{
+			cout << -1;
+			return 0;
+		}
+
+		string answer;
+		while (aCount + zCount)
+		{
+			if (aCount == 0)
+			{
+				answer.append(string(zCount, 'z'));
+				break;
+			}
+			else if (zCount == 0)
+			{
+
+				answer.append(string(aCount, 'a'));
+				break;
+			}
+			else
+			{
+				//현재 자리가 'a'라고 가정
+				//남은 order수가 못 미치면 'z'
+				auto comb = combination(aCount + zCount - 1, aCount - 1);
+				if (comb >= order)
+				{
+					--aCount;
+					answer += 'a';
+				}
+				else
+				{
+					--zCount;
+					answer += 'z';
+					order -= comb;
+				}
+			}
+		}
+
+		cout << answer;
+
+		return 0;
+	}
 }
