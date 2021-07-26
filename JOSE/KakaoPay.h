@@ -1,15 +1,7 @@
 #pragma once
 
-#include <iostream>
-#include <string>
+#include <memory>
 #include <vector>
-#include <algorithm>
-#include <unordered_map>
-#include <queue>
-#include <functional>
-#include <utility>
-#include <array>
-#include <limits>
 
 using namespace std;
 
@@ -20,14 +12,7 @@ namespace kakao {
 	class Wire
 	{
 	public:
-		Wire(int length) : length_(length) {}
-		/*Wire(Wire&& other) noexcept
-		{
-			from_ = other.from_;
-			to_ = other.to_;
-			length_ = other.length_;
-		}*/
-
+		explicit Wire(int length) : length_(length) {}
 		~Wire() = default;
 
 		bool isWorking() const;

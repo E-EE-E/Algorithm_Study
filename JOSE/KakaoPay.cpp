@@ -2,6 +2,8 @@
 
 #include "KakaoPay.h"
 
+#include <algorithm>
+
 using namespace std;
 
 int kakao::Generator::count_ = 0;
@@ -47,10 +49,10 @@ namespace kakao {
 				generator.ADayAfter();
 		};
 
-
+		//어느 하나 살아있는동안, 하루 하루 지나기
 		while (!isAllGenDead())
 			aDayAfter();
-		
+
 		return answer;
 	}
 
@@ -110,6 +112,6 @@ namespace kakao {
 
 	void Generator::addOutgoingWire(const shared_ptr<Wire> wire)
 	{
-		outgoing_.emplace_back(wire);		
+		outgoing_.emplace_back(wire);
 	}
 }
