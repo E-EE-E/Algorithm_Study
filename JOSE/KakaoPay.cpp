@@ -63,8 +63,7 @@ namespace kakao {
 
 	void Wire::imDying()
 	{
-		--ages_;
-		if (ages_ <= 0)
+		if (--ages_ <= 0)
 			isWorking_ = false;
 	}
 
@@ -76,8 +75,7 @@ namespace kakao {
 	void Generator::ADayAfter()
 	{
 		//수명은 하루에 1씩 감소합니다.
-		--ages_;
-		if (ages_ <= 0)
+		if (--ages_ <= 0)
 		{
 			for (auto& wire : outgoing_)
 			{
@@ -105,12 +103,12 @@ namespace kakao {
 		return id_;
 	}
 
-	void Generator::addIncomingWire(const shared_ptr<Wire> wire)
+	void Generator::addIncomingWire(const shared_ptr<Wire>& wire)
 	{
 		incoming_.emplace_back(wire);
 	}
 
-	void Generator::addOutgoingWire(const shared_ptr<Wire> wire)
+	void Generator::addOutgoingWire(shared_ptr<Wire> wire)
 	{
 		outgoing_.emplace_back(wire);
 	}

@@ -33,7 +33,7 @@ namespace kakao {
 		void ADayAfter();
 		bool isLive() const;
 		int id() const;
-		void addIncomingWire(shared_ptr<Wire> wire);
+		void addIncomingWire(const shared_ptr<Wire>& wire);
 		void addOutgoingWire(shared_ptr<Wire> wire);
 
 	private:

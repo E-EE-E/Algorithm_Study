@@ -21,15 +21,19 @@ int main()
 	//debug.open("debug.txt");
 	//cout.rdbuf(debug.rdbuf());
 
-	//vector<long long> ages = { 35, 25, 3, 8, 7 };
-	//vector<vector<int>> wires = { {1, 2, 5}, { 2, 1, 5 }, { 1, 3, 2 }, { 3, 4, 2 }, { 3, 5, 20 }, { 4, 5, 1 } };
+	//CASE#1
+	vector<long long> ages = { 35, 25, 3, 8, 7 };
+	vector<vector<int>> wires = { {1, 2, 5}, { 2, 1, 5 }, { 1, 3, 2 }, { 3, 4, 2 }, { 3, 5, 20 }, { 4, 5, 1 } };
 	//answer :  [3,4,5,2,1]
 	
-	vector<long long> ages = { 8, 13, 5, 8 };
-	vector<vector<int>> wires = { {1, 3, 10}, { 3, 4, 1 }, { 4, 2, 2 }, { 2, 1, 3 } };
+	//CASE#2
+	//vector<long long> ages = { 8, 13, 5, 8 };
+	//vector<vector<int>> wires = { {1, 3, 10}, { 3, 4, 1 }, { 4, 2, 2 }, { 2, 1, 3 } };
 	//asnwer : [3,4,1,2]
 
-	kakao::solution(ages, wires);
+	auto answer = kakao::solution(ages, wires);
+	for (auto& deadOrder : answer)
+		cout <<deadOrder << " ";
 
 	return 0;
 }
