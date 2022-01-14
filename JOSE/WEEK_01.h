@@ -93,4 +93,68 @@ namespace bj
 		enterance.traverse();
 		return 0;
 	}
+
+	int P()
+	{
+		size_t N, M, K;
+		cin >> N >> M >> K;
+
+		std::vector<long long> num(N);
+		std::vector<long long> acc(N);
+
+		long long acc = 0;
+
+		auto jter = acc.begin();
+		for(auto iter = num.begin(); iter != num.end(); ++iter, ++jter)
+		{
+			auto& elem = *iter;
+			std::cin >> elem;
+			*jter = acc += elem;
+		}
+
+		enum class Command
+		{
+			UNDEFINED = 0,
+			SWITCH,
+			PRINT
+		};
+
+		std::vector<std::pair<int, long long>> record(M);
+		Command command;
+		int from, to;
+		
+		for(size_t i = M + K; i != 0; --i)
+		{
+			cin >> command >> from >> to;
+			switch (command)
+			{
+			case Command::SWITCH:
+				record.emplace_back(from, to);
+				break;
+			case Command::PRINT:
+
+				auto rerult = acc[to] - acc[from];
+				for (const auto& rec : record)
+				{
+					int where = rec.first;
+					if (where > to)
+						continue;
+					else
+					{
+						result += (to - from + 1) * rec.second;
+						result -= (to - i) * rec.second;
+					}
+				}
+				std::cout << result << std::endl;
+				break;
+			default:
+				return -1;
+			}
+		}
+
+		return 0;
+	}
+
+
+
 }
