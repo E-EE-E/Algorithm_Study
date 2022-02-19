@@ -1,9 +1,7 @@
 #include "iostream"
 using namespace std;
 int main(){
-    string temp = "123";
-    int num = atoi(temp.c_str()+1);
-
-    //printf("%d ", num);
-    cout<<num;
+    long long cnt = 9223372036854775807;
+    cnt=(1LL<<63)-1;
+    printf("%lld", cnt);
 }
